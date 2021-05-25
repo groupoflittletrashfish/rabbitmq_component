@@ -1,0 +1,17 @@
+server:
+  port: 8002
+  servlet:
+    context-path: /
+spring:
+  rabbitmq:
+    addresses: 192.168.2.139:5672 #如果是集群则可以使用逗号分隔
+    username: noname
+    password: noname
+    virtual-host: /       #默认是/，虚拟主机的用途一般是用于区分多个项目。也可以简单的理解为一个组
+    connection-timeout: 15000     #连接超时时间，15s
+    listener:
+      simple:
+        acknowledge-mode: manual     #manual是指消费成功后需要手动确认
+        concurrency: 5               #线程数
+        max-concurrency: 10
+        prefetch: 1                  #预取，是指消费者会预先从队列中提取N条消息载入到内存中
