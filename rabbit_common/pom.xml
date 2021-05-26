@@ -11,5 +11,12 @@
 
     <artifactId>rabbit-common</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.noname</groupId>
+            <artifactId>rabbit_api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
