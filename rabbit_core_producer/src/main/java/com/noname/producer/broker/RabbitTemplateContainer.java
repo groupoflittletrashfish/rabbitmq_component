@@ -10,6 +10,7 @@ import com.noname.common.covert.RabbitMessageConverter;
 import com.noname.common.serializer.SerializerFactory;
 import com.noname.common.serializer.impl.JacksonSerializerFactory;
 import com.noname.exception.MessageRunTimeException;
+import com.noname.producer.service.MessageStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -41,6 +42,9 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
     @Resource
     private ConnectionFactory connectionFactory;
     private SerializerFactory serializerFactory = JacksonSerializerFactory.INSTANCE;
+    @Resource
+    private MessageStoreService messageStoreService;
+
 
     public RabbitTemplate getRabbitTemplate(Message message) throws MessageRunTimeException {
         Preconditions.checkNotNull(message);
@@ -77,6 +81,8 @@ public class RabbitTemplateContainer implements RabbitTemplate.ConfirmCallback {
         Long sendTime = Long.parseLong(strings.get(1));
 
         if (ack) {
+            //当Broker返回ACK成功时，要更新记录的状态
+            this.messageStoreService.success(messageId);
             log.info("send message is ok,confirm messageId:{},sendTime:{}", messageId, sendTime);
         } else {
             log.error("send message is Fail,confirm messageId:{},sendTime:{}", messageId, sendTime);
